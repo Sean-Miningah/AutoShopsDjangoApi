@@ -42,6 +42,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
 
     "AutoUser",
+    "technician",
 
     "rest_framework",
     "rest_framework.authtoken",
