@@ -4,6 +4,8 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -31,3 +33,22 @@ def verifyemail(request):
 class CreateAccountView(viewsets.ModelViewSet):
     queryset = AutoUser.objects.all()
     serializer_class = AutoUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        # Acquire instance of created user
+        theUser = AutoUser.objects.get(email=request.data['email'])
+
+
+        token = Token.objects.create(user=theUser)
+
+        res = {
+            "message": "Succesfully Registered!",
+            "token": "Token " + token.key
+        }
+
+        return Response(res, status=status.HTTP_201_CREATED, headers=headers)

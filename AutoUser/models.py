@@ -27,7 +27,7 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=20, blank=False)
     start_date = models.DateField(auto_now=True)
     phone_number = models.CharField(max_length=50, blank=False, unique=True)
-    email = models.CharField(max_length=50, blank=False)
+    email = models.CharField(max_length=50, blank=False, unique=True)
     password = models.CharField(max_length=100)
     is_technician = models.BooleanField(default=False)
     is_advertiser = models.BooleanField(default=False)
@@ -36,7 +36,7 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
 
     objects = CustomAccountManager()
 
-    USERNAME_FIELD = 'phone_number'
+    USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
     def __str__(self):

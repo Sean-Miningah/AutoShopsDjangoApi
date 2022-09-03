@@ -1,0 +1,20 @@
+# POST http://127.0.0.1:8000/api/auto-user/verify-email/
+# content-type: application/json
+
+# {
+#     "email": "miningahsean@gmail.com"
+# }
+
+
+POST http://127.0.0.1:8000/api/auto-user/create-account/
+content-type: application/json
+
+{
+    "first_name": "Test_User1",
+    "last_name": "LastName_Test",
+    "phone_number": "0723456789",
+    "email": "test@gmail.com",
+    "password": "0000",
+    "is_technician": "false",
+    "is_advertiser": "false"
+}

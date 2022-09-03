@@ -8,4 +8,4 @@ class AutoUserSerializer(serializers.ModelSerializer):
 
     class Meta: 
         model = AutoUser
-        exclude = ['password', 'is_active', 'is_staff', 'start_date']
+        exclude = ['is_active', 'is_staff', 'start_date']

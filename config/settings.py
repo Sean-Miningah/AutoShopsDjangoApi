@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "AutoUser",
 
     "rest_framework",
+    "rest_framework.authtoken",
     "graphene_django",
 
     "django.contrib.admin",
@@ -84,18 +85,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 # Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-def host_check(postgreshost):
-    try:
-        host = os.getenv('POSTGRES_HOST')
-        return host
-    except:
-        host = 'localhost'
-        return host
-
         
 DATABASES = {
     "default": {
