@@ -40,8 +40,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "auto_owner",
 
+    "AutoUser",
+
+    "rest_framework",
     "graphene_django",
 
     "django.contrib.admin",
@@ -95,17 +97,19 @@ def host_check(postgreshost):
         return host
 
         
-
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': env('POSTGRES_DB'),
         'USER': env('POSTGRES_USER'),
         'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
+        # 'HOST': env('POSTGRES_HOST'),
+        'HOST': 'localhost',
         'PORT': env('POSTGRES_PORT'),
     }
 }
+
+
 
 
 # Password validation
@@ -142,3 +146,5 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "AutoUser.AutoUser"
