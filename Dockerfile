@@ -1,5 +1,5 @@
 # Pull base image
-FROM python:3.8
+FROM python:3.8-slim
 
 # Set environment variables
 ENV PIP_DISABLE_PIP_VERSION_CHECK 1
@@ -11,7 +11,7 @@ WORKDIR /code
 
 # Install dependencies
 COPY ./requirements.txt /code/
-RUN pip install -r requirements.txt
+RUN pip3 --no-cache-dir install -r requirements.txt
 
 # Copy project
 COPY . /code/
