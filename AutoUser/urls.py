@@ -4,9 +4,11 @@ from . import views
 
 
 router = DefaultRouter()
+
 router.register("create-account", views.CreateAccountView, basename="create-account")
 
 
 urlpatterns = [
     path('auto-user/', include(router.urls)),
+    path('auto-user/verify-email/', views.verifyemail, name='verify-email')
 ]
