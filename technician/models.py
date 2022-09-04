@@ -2,13 +2,17 @@ from django.contrib.auth import get_user_model
 AutoUser = get_user_model()
 
 from django.db import models
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 class TechnicianDetails(models.Model):
-    autouser_id = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
+    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
     lat = models.CharField(max_length=30, blank=True)
     lng = models.CharField(max_length=30, blank=True)
-    profile_picture = models.ImageField(upload_to='user/technician/')
+    # profile_picture = models.ImageField(upload_to='photos/technician/')
+    profile_picture=ProcessedImageField(upload_to='photos/autouser/', default='default_technician_photo',
+        processors=[ResizeToFill(160,320, upscale=True)], format='JPEG', options={'quality': 80})
     shop_description = models.TextField()
     shop_goal = models.TextField()
     rating = models.FloatField()
@@ -30,7 +34,7 @@ class TechnicianSpecializaitons(models.Model):
 
 
 class ShopFeedbackRating(models.Model):
-    technician_id = models.ForeignKey(TechnicianDetails, 
+    technician = models.ForeignKey(TechnicianDetails, 
             null=True, on_delete=models.SET_NULL)
     description = models.TextField()
     rating = models.FloatField()
@@ -48,4 +52,4 @@ class SkillBadge(models.Model):
 class TechnicinanBadge(models.Model):
     
     badge = models.ForeignKey(SkillBadge, on_delete=models.CASCADE)
-    technician_id = models.ForeignKey(TechnicianDetails, on_delete=models.CASCADE) 
+    technician = models.ForeignKey(TechnicianDetails, on_delete=models.CASCADE) 

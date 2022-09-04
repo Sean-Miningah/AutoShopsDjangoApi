@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 class CustomAccountManager(BaseUserManager):
@@ -25,6 +27,8 @@ class CustomAccountManager(BaseUserManager):
 class AutoUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=20, blank=False)
     last_name = models.CharField(max_length=20, blank=False)
+    # photo = models.ImageField(upload_to='photos/autouser/', default="default_profile_pic")
+    photo=ProcessedImageField(upload_to='photos/autouser/',default="default_profile_pic", processors=[ResizeToFill(160,320, upscale=True),], format='JPEG', options={'quality': 80})
     start_date = models.DateField(auto_now=True)
     phone_number = models.CharField(max_length=50, blank=False, unique=True)
     email = models.CharField(max_length=50, blank=False, unique=True)
