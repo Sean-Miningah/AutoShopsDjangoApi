@@ -7,8 +7,8 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import ( TechnicianDetails, Specialization, TechnicianSpecializaitons,
-                ShopFeedbackRating, SkillBadge, TechnicinanBadge)
+from .models import ( TechnicianDetails, Specialization, TechnicianSpecializations,
+                ShopFeedbackRating, SkillBadge, TechnicianBadge)
 from .serializers import ( TechnicianDetailsSerializer, SpecializationSerializer, TechnicianSpecializationsSerializer,
                 ShopFeedbackRatingSerializer, SkillBadgeSerializer, TechnicianBadgeSerializer)
 
@@ -32,5 +32,10 @@ class TechnicianDetailView(viewsets.ModelViewSet):
         }
 
         return Response(res, status=status.HTTP_201_CREATED, headers=headers)
+
+
+        # listing technician details, updating technician details, 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_querset(self.get_queryset())
 
 

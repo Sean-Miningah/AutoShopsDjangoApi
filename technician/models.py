@@ -28,7 +28,7 @@ class Specialization(models.Model):
     )
     name = models.CharField(max_length=40, choices=SPECIALIZATIONS_OPTIONS)
 
-class TechnicianSpecializaitons(models.Model):
+class TechnicianSpecializations(models.Model):
     technician = models.ManyToManyField(TechnicianDetails)
     specialization = models.ManyToManyField(Specialization)
 
@@ -49,7 +49,7 @@ class SkillBadge(models.Model):
     )
     badge = models.CharField(max_length=20, choices=BADGE_OPTIONS)
 
-class TechnicinanBadge(models.Model):
+class TechnicianBadge(models.Model):
     
     badge = models.ForeignKey(SkillBadge, on_delete=models.CASCADE)
     technician = models.ForeignKey(TechnicianDetails, on_delete=models.CASCADE) 

@@ -6,7 +6,7 @@ from .models import (TechnicianDetails, Specialization, TechnicianSpecialization
 
 class TechnicianDetailsConfig(admin.ModelAdmin):
     search_fields = ('autouser',)
-    list_display = ('rating', 'shop_goal', 'lat', 'long', 'id')
+    list_display = ('rating', 'shop_goal', 'lat', 'lng', 'id')
 
     fieldsets = (
         (None, {'fields': ('autouser', 'profile_picture', 'rating')}),
@@ -33,7 +33,7 @@ class SpecializationConfig(admin.ModelAdmin):
 
 class TechnicianSpecializationsConfig(admin.ModelAdmin):
     search_fields = ('technician','specialization',)
-    list_display = ('technician', 'specialization')
+    # list_display = ('technician', 'specialization')
 
     fieldsets = (
         (None, {'fields': ('technician', 'specialization')}),

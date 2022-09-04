@@ -3,14 +3,23 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 AutoUser = get_user_model()
 
+from AutoUser.serializers import AutoUserSerializer
+
 from .models import (SkillBadge, TechnicianDetails, Specialization, 
-                TechnicianSpecializaitons, ShopFeedbackRating, TechnicinanBadge)
+                TechnicianSpecializations, ShopFeedbackRating, TechnicianBadge)
 
 class TechnicianDetailsSerializer(serializers.ModelSerializer):
+
+    autouser = AutoUserSerializer()
 
     class Meta:
         model = TechnicianDetails
         fields = '__all__'
+
+    def create(self, validated_data):
+        autouser = validated_data.pop('auto_user')
+        tech_details_instance = TechnicianDetails.objects.create(**validated_data)
+        return tech_details_instance
 
 class SpecializationSerializer(serializers.ModelSerializer):
 
@@ -21,7 +30,7 @@ class SpecializationSerializer(serializers.ModelSerializer):
 class TechnicianSpecializationsSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = TechnicianSpecializaitons
+        model = TechnicianSpecializations
         fields = '__all__'
         depth = 1
 
@@ -41,6 +50,6 @@ class SkillBadgeSerializer(serializers.ModelSerializer):
 class TechnicianBadgeSerializer(serializers.ModelSerializer):
 
     class Meta: 
-        model = TechnicinanBadge
+        model = TechnicianBadge
         fields = '__all__'
         depth = 1
