@@ -6,23 +6,27 @@ from imagekit.processors import ResizeToFill
 
 class CustomAccountManager(BaseUserManager):
 
-    def create_user(self, phone_number, password, **other_fields):
-        if not phone_number:
-            raise ValueError("A phone number must be provided")
+    def create_user(self, email, password=None, **other_fields):
+        if not email:
+            raise ValueError("A email must be provided")
 
-        user = self.model(phone_number=phone_number, **other_fields)
-
+        user = self.model(email=email, **other_fields)
         user.set_password(password)
-
         user.save()
+
         return user
 
-    def create_superuser(self, phone_number, password, **other_fields):
-        other_fields.setdefault('is_staff', True)
-        other_fields.setdefault('is_superuser', True)
-        other_fields.setdefault('is_active', True)
+    def create_superuser(self, email, password=None, **other_fields):
+        if password is None: 
+            raise TypeError('Superusers must have a password')
 
-        return self.create_user(phone_number, password, **other_fields)
+        user = self.create_user(email, password)
+        user.is_superuser = True 
+        user.is_staff = True 
+        user.save() 
+
+
+        return user
 
 class AutoUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=20, blank=False)
@@ -32,7 +36,7 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
     start_date = models.DateField(auto_now=True)
     phone_number = models.CharField(max_length=50, blank=False, unique=True)
     email = models.CharField(max_length=50, blank=False, unique=True)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=128, null=False)
     is_technician = models.BooleanField(default=False)
     is_advertiser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
