@@ -15,7 +15,7 @@ from .serializers import ( TechnicianDetailsSerializer, SpecializationSerializer
 
 class TechnicianDetailView(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer = TechnicianDetailsSerializer
+    serializer_class = TechnicianDetailsSerializer
     
     def get_queryset(self):
         user = self.request.user
@@ -36,6 +36,14 @@ class TechnicianDetailView(viewsets.ModelViewSet):
 
         # listing technician details, updating technician details, 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_querset(self.get_queryset())
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None: 
+            serializer = self.get_serializer(page, many=True)
+            return self.paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
