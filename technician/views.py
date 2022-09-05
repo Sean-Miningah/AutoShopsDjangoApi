@@ -34,7 +34,7 @@ class TechnicianDetailView(viewsets.ModelViewSet):
         return Response(res, status=status.HTTP_201_CREATED, headers=headers)
 
 
-        # listing technician details, updating technician details, 
+        ## Endpoint to provide technician with information on self
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
