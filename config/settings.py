@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import environ
 import os
 from pathlib import Path
+from graphql_auth.settings import DEFAULTS
 
 env = environ.Env(
     DEBUG=(bool, False)
@@ -47,7 +48,12 @@ INSTALLED_APPS = [
     "imagekit",
     "rest_framework",
     "rest_framework.authtoken",
-    "graphene_django",
+    "graphene_django", 
+
+    # refresh tokens are optional
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
+    'django_filters',
 
     "django.contrib.admin",
     "django.contrib.auth",
@@ -66,6 +72,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "config.urls"
 
@@ -88,6 +95,10 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 REST_FRAMEWORK = {
+
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ]
@@ -107,11 +118,45 @@ DATABASES = {
     }
 }
 
+GRAPHENE = {
+    'SCHEMA': 'AutoUser.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
 
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+
+    "JWT_ALLOW_ANY_CLASSES":[
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+    ]
+}
 
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
+AUTHENTICATION_BACKENDS = [
+    # 'graphql_jwt.backends.JSONWebTokenBackend',
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+DEFAULTS['LOGIN_ALLOWED_FIELDS'] = ['email']
+DEFAULTS['REGISTER_MUTATION_FIELDS'] = ['email', 'phone_number', 
+        'is_advertiser', 'photo', 'first_name', 'last_name', 'is_technician',]
+DEFAULTS['USER_NODE_FILTER_FIELDS'] = {
+    'email': ['exact'],
+    'is_active': ['exact'],
+    'status__archived': ['exact'],
+    'status__verified': ['exact'],
+    'status__secondary_email': ['exact'],
+}
+GRAPHQL_AUTH = DEFAULTS
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -154,7 +199,8 @@ AUTH_USER_MODEL = "AutoUser.AutoUser"
 # Gmail Serivices
 DEFAULT_FROM_EMAIL = 'sean.miningah@strathmore.edu'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'sean.miningah@strathmore.edu'
 EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
