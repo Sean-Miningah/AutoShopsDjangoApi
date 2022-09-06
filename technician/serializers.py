@@ -10,7 +10,7 @@ from .models import (SkillBadge, TechnicianDetails, Specialization,
 
 class TechnicianDetailsSerializer(serializers.ModelSerializer):
 
-    autouser = AutoUserSerializer()
+    autouser = AutoUserSerializer(read_only=True)
 
     class Meta:
         model = TechnicianDetails
@@ -29,6 +29,9 @@ class SpecializationSerializer(serializers.ModelSerializer):
 
 class TechnicianSpecializationsSerializer(serializers.ModelSerializer):
 
+    technician = TechnicianDetailsSerializer(many=True, read_only=True)
+    specialization = SpecializationSerializer(many=True, read_only=True)
+
     class Meta:
         model = TechnicianSpecializations
         fields = '__all__'
@@ -36,10 +39,13 @@ class TechnicianSpecializationsSerializer(serializers.ModelSerializer):
 
 class ShopFeedbackRatingSerializer(serializers.ModelSerializer):
 
+    technician = TechnicianDetailsSerializer(read_only=True, many=True)
+    autouser = AutoUserSerializer(read_only=True, many=True) 
+
     class Meta:
         model = ShopFeedbackRating
         fields = '__all__'
-        depth = 1
+        depth = 2
 
 class SkillBadgeSerializer(serializers.ModelSerializer):
 
@@ -49,7 +55,19 @@ class SkillBadgeSerializer(serializers.ModelSerializer):
 
 class TechnicianBadgeSerializer(serializers.ModelSerializer):
 
+    technician = TechnicianDetailsSerializer()
+
     class Meta: 
         model = TechnicianBadge
         fields = '__all__'
         depth = 1
+
+class TechnicianFeedSerializer(serializers.ModelSerializer):
+
+    tech_details = TechnicianDetailsSerializer()
+    specializations = TechnicianSpecializationsSerializer()
+    reviews = ShopFeedbackRatingSerializer()
+    badge = TechnicianBadgeSerializer()
+
+#  def update(self, request, *args, **kwargs):
+#         return super().update(request, *args, **kwargs)

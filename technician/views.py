@@ -1,6 +1,9 @@
 from django.shortcuts import render
 
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth import get_user_model
+
+import technician
 AutoUser = get_user_model()
 
 from rest_framework import viewsets, status
@@ -35,15 +38,55 @@ class TechnicianDetailView(viewsets.ModelViewSet):
 
 
         ## Endpoint to provide technician with information on self
+
+    #     return Response(serializer.data)
+
+class TechnicianFeedView(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = TechnicianDetailsSerializer
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['category', 'in_stock']
+    
+    def get_queryset(self):
+        user = self.request.user
+        return TechnicianDetails.objects.exclude(autouser=user)
+
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        res = []
+        tech_autouser = AutoUser.objects.filter(is_technician=True)
+        for tech in TechnicianDetails.objects.filter(autouser__in=tech_autouser):
+            # print(TechnicianSpecializationsSerializer(data=TechnicianSpecializations.
+            #                 objects.filter(technician=tech)[0]))
+            # specialization = TechnicianSpecializationsSerializer(data=TechnicianSpecializations.
+            #                 objects.filter(technician=tech), many=True)
+            # print(specialization[0])
+            specialization = TechnicianSpecializations.objects.filter(technician=tech)
+            # print(help(specialization))
+            reviews = ShopFeedbackRatingSerializer(data=ShopFeedbackRating.objects.filter(technician=tech), 
+                            many=True).is_valid(raise_exception=True)
+            badge = TechnicianBadgeSerializer(data=TechnicianBadge.objects.filter(technician=tech)).is_valid(raise_exception=True)
+            tech_info = {
+                # "specializations": specialization.validated_data,
+                "reviews": reviews.validated_data,
+                "badge": badge.validated_data
+            }
+            res.append(tech_info)
 
-        page = self.paginate_queryset(queryset)
-        if page is not None: 
-            serializer = self.get_serializer(page, many=True)
-            return self.paginated_response(serializer.data)
+        return Response(res,status=status.HTTP_200_OK)
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+class SpecializationView(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = SpecializationSerializer
+    queryset =  Specialization.objects.all()  
+    http_method_names = ['get']
+
+    # def create(self, request, *args, **kwargs):
+    #     pass 
+
+    # def update(self, request, *args, **kwargs):
+    #     pass
+
+
+
 
 

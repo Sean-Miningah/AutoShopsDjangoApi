@@ -49,7 +49,7 @@ class ShopFeedbackRating(models.Model):
             on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.date
+        return str(self.date)
 
 class SkillBadge(models.Model):
     BADGE_OPTIONS = (
@@ -68,4 +68,4 @@ class TechnicianBadge(models.Model):
     technician = models.ForeignKey(TechnicianDetails, on_delete=models.CASCADE) 
 
     def __str__(self):
-        return self.technician + self.badge
+        return str(self.technician) + ' ' + str(self.badge)
