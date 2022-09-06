@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from django.apps import apps
 
 from AutoUser.models import AutoUser
 
@@ -81,3 +82,9 @@ admin.site.register(AutoUser, UserAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
+
+# Graphql and Jwt Admin models.
+app = apps.get_app_config('graphql_auth')
+
+for model_name, model in app.models.items():
+    admin.site.register(model)

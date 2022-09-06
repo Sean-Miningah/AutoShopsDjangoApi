@@ -34,7 +34,7 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
     # photo = models.ImageField(upload_to='photos/autouser/', default="default_profile_pic")
     photo=ProcessedImageField(upload_to='photos/autouser/',default="default_profile_pic", processors=[ResizeToFill(160,320, upscale=True),], format='JPEG', options={'quality': 80})
     start_date = models.DateField(auto_now=True)
-    phone_number = models.CharField(max_length=50, blank=False, unique=True)
+    phone_number = models.CharField(max_length=50, blank=True, unique=False)
     email = models.CharField(max_length=50, blank=False, unique=True)
     password = models.CharField(max_length=128, null=False)
     is_technician = models.BooleanField(default=False)
@@ -45,6 +45,7 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'email'
+    EMAIL_FIELD='email'
     REQUIRED_FIELDS = []
 
     def __str__(self):
