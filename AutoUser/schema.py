@@ -4,19 +4,27 @@ from graphql_auth import mutations
 from graphql_auth.schema import UserQuery, MeQuery 
 
 from .models import AutoUser
-from technician.models import TechnicianDetails
+from technician.models import TechnicianDetails, TechnicianSpecializations, Specialization
 from .types import AutoUserType
-from technician.types import TechnicianDetailType
+from technician.types import TechnicianDetailType, TechnicianSpecializationsType, SpecializationType
 
 class TechnicianQuery(graphene.ObjectType):
     userinfo = graphene.List(AutoUserType)
     technician = graphene.List(TechnicianDetailType)
+    techspecialization = graphene.List(TechnicianSpecializationsType)
+    specialization = graphene.List(SpecializationType)
 
     def resolve_userinfo(self, info, **kwargs):
         return AutoUser.objects.filter(is_technician=True,)
 
-    def resolve_techncian(self,info, **kwargs):
+    def resolve_technician(self,info, **kwargs):
         return TechnicianDetails.objects.all()
+    
+    def resolve_techspecialization(self, info, **kwargs):
+        return TechnicianSpecializations.objects.all()
+
+    def resolve_specialization(self, info, **kwargs):
+        return Specialization.objects.all()
 
 class AutoUserFeedQuery():
     pass

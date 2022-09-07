@@ -5,6 +5,16 @@ from django.db import models
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
+class SkillBadge(models.Model):
+    BADGE_OPTIONS = (
+        ('gold', 'GOLD'),
+        ('silver', 'SILVER'),
+        ('bronze', 'BRONZE')
+    )
+    badge = models.CharField(max_length=20, choices=BADGE_OPTIONS)
+
+    def __str__(self):
+        return self.badge
 
 class TechnicianDetails(models.Model):
     autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE) # should implement a an optional one to one relation with the auto user
@@ -16,9 +26,12 @@ class TechnicianDetails(models.Model):
     shop_description = models.TextField()
     shop_goal = models.TextField()
     rating = models.FloatField(default=0)
+    skill_badge = models.ForeignKey(SkillBadge, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return str(self.id) + ' -- name is ' + str(self.autouser)
+
+
 
 class Specialization(models.Model):
     SPECIALIZATIONS_OPTIONS = (
@@ -50,22 +63,3 @@ class ShopFeedbackRating(models.Model):
 
     def __str__(self):
         return str(self.date)
-
-class SkillBadge(models.Model):
-    BADGE_OPTIONS = (
-        ('gold', 'GOLD'),
-        ('silver', 'SILVER'),
-        ('bronze', 'BRONZE')
-    )
-    badge = models.CharField(max_length=20, choices=BADGE_OPTIONS)
-
-    def __str__(self):
-        return self.badge
-
-class TechnicianBadge(models.Model):
-    
-    badge = models.ForeignKey(SkillBadge, on_delete=models.CASCADE)
-    technician = models.ForeignKey(TechnicianDetails, on_delete=models.CASCADE) 
-
-    def __str__(self):
-        return str(self.technician) + ' ' + str(self.badge)

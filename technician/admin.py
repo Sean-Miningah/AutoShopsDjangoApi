@@ -1,21 +1,21 @@
 from django.contrib import admin
 
 from .models import (TechnicianDetails, Specialization, TechnicianSpecializations, 
-        ShopFeedbackRating, SkillBadge, TechnicianBadge)
+        ShopFeedbackRating, SkillBadge)
 
 
 class TechnicianDetailsConfig(admin.ModelAdmin):
-    search_fields = ('autouser',)
+    search_fields = ('autouser', 'skill_badge')
     list_display = ('rating', 'shop_goal', 'lat', 'lng', 'id')
 
     fieldsets = (
-        (None, {'fields': ('autouser', 'profile_picture', 'rating')}),
+        (None, {'fields': ('autouser', 'profile_picture', 'rating', 'skill_badge')}),
         ('Location', {'fields': ('lat', 'lng')}),
         ('Description', {'fields': ('shop_description', 'shop_goal')})
     )
 
     add_fieldsets = (
-        (None, {'fields': ('autouser', 'profile_picture', 'rating')}),
+        (None, {'fields': ('autouser', 'profile_picture', 'rating', 'skill_badge')}),
         ('Location', {'fields': ('lat', 'lng')}),
         ('Description', {'fields': ('shop_description', 'shop_goal')})
     )
@@ -69,21 +69,9 @@ class SkillBadgeConfig(admin.ModelAdmin):
         (None, {'fields': ('badge',)}),
     )
 
-class TechnicianBadgeConfig(admin.ModelAdmin):
-    search_fields = ('badge', 'technician')
-    list_display = ('id', 'badge', 'technician')
-
-    fieldsets = (
-        (None, {'fields': ('badge', 'technician')}),
-    )
-
-    add_fieldsets = (
-        (None, {'fields': ('badge', 'technician')}),
-    )
 
 admin.site.register(TechnicianDetails, TechnicianDetailsConfig)
 admin.site.register(Specialization, SpecializationConfig)
 admin.site.register(TechnicianSpecializations, TechnicianSpecializationsConfig)
 admin.site.register(ShopFeedbackRating, ShopFeedbackRatingConfig)
 admin.site.register(SkillBadge, SkillBadgeConfig)
-admin.site.register(TechnicianBadge, TechnicianBadgeConfig)
