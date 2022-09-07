@@ -18,6 +18,8 @@ class TechnicianQuery(graphene.ObjectType):
     def resolve_techncian(self,info, **kwargs):
         return TechnicianDetails.objects.all()
 
+class AutoUserFeedQuery():
+    pass
     
 
 class AuthMutation(graphene.ObjectType):

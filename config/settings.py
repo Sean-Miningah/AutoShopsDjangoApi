@@ -33,7 +33,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -197,12 +197,12 @@ AUTH_USER_MODEL = "AutoUser.AutoUser"
 
 
 # Gmail Serivices
-DEFAULT_FROM_EMAIL = 'sean.miningah@strathmore.edu'
+DEFAULT_FROM_EMAIL = env('POSTGRES_HOST_USER')
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'sean.miningah@strathmore.edu'
-EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
+EMAIL_HOST_USER = env('POSTGRES_HOST_USER')
+EMAIL_HOST_PASSWORD = env('POSTGRES_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
