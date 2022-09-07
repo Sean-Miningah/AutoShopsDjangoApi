@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType 
 
-from .models import TechnicianDetails, Specialization
+from .models import TechnicianDetails
 from AutoUser.models import AutoUser
 
 class AutoUserType(DjangoObjectType):
@@ -16,7 +16,6 @@ class TechnicianDetailsType(DjangoObjectType):
         model = TechnicianDetails
         fields = ("id", 'autouser', 'lat', 'lng', 
                 'profile_picture', 'shop_description', 'shop_goal', 'rating') # the fields that we want to contain in this text
-
 
 
 
