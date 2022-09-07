@@ -83,8 +83,21 @@ class UpdateFeedback(graphene.Mutation):
             return UpdateFeedback(feedback=feedback_instance)
         return UpdateFeedback(book=None)
 
+class DeleteFeedback(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    feedback = graphene.Field(ShopFeedbackRatingType)
+
+    def mutate(root, info, id):
+        feedback_instance = ShopFeedbackRating.objects.get(pk=id)
+        feedback_instance.delete()
+
+        return None
+
  
 
 class TechMutations(graphene.ObjectType):
     create_feedback = CreateFeedback.Field()
     update_feedback = UpdateFeedback.Field()
+    delete_feedback = DeleteFeedback.Field()
