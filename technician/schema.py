@@ -1,10 +1,11 @@
 import graphene
 from graphene_django import DjangoObjectType 
 
-from .models import SkillBadge, TechnicianDetails, TechnicianSpecializations, Specialization
+from .models import (SkillBadge, TechnicianDetails, TechnicianSpecializations, Specialization,
+        ShopFeedbackRating)
 from AutoUser.models import AutoUser
 from .types import (TechnicianDetailType, TechnicianSpecializationsType, SpecializationType, 
-        SkillBadgeType)
+        SkillBadgeType, ShopFeedbackRatingType)
 
 class AutoUserType(DjangoObjectType):
 
@@ -37,6 +38,53 @@ class TechnicianQuery(graphene.ObjectType):
     def resolve_specialization(self, info, **kwargs):
         return Specialization.objects.all()
 
+# Mutations
+class FeedbackInput(graphene.InputObjectType):
+    id = graphene.ID()
+    tech_id = graphene.ID()
+    description = graphene.String()
+    rating = graphene.Float()
+
+
+class CreateFeedback(graphene.Mutation):
+    class Arguments:
+        feedback_data = FeedbackInput(required=True)
+
+    feedback = graphene.Field(ShopFeedbackRatingType)
+
+    def mutate(root, info, feedback_data=None):
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authenticated credentials were not provided")
+
+        tech = TechnicianDetails.objects.get(id=feedback_data.tech_id)
+        feedback_instance = ShopFeedbackRating(
+            technician=tech, description=feedback_data.description,
+            rating=feedback_data.rating, 
+            autouser=user
+        )
+        feedback_instance.save()
+        return CreateFeedback(feedback=feedback_instance)
+        
+class UpdateFeedback(graphene.Mutation):
+    class Arguments:
+        feedback_data = FeedbackInput(required=True)
+
+    feedback = graphene.Field(ShopFeedbackRatingType)
+
+    def mutate(root, info, feedback_data=None):
+        feedback_instance = ShopFeedbackRating.objects.get(pk=feedback_data.id)
+
+        if feedback_instance:
+            feedback_instance.tech_id=feedback_data.tech_id
+            feedback_instance.description=feedback_data.description
+            feedback_instance.rating=feedback_data.rating
+            feedback_instance.save()
+            return UpdateFeedback(feedback=feedback_instance)
+        return UpdateFeedback(book=None)
 
  
 
+class TechMutations(graphene.ObjectType):
+    create_feedback = CreateFeedback.Field()
+    update_feedback = UpdateFeedback.Field()
