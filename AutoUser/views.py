@@ -7,9 +7,16 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 
+from django.contrib.auth.mixins import LoginRequiredMixin 
+from graphene_django.views import GraphQLView
+
 
 from .models import (AutoUser)
 from .serializers import (AutoUserSerializer)
+
+
+class PrivateGraphQLView(LoginRequiredMixin, GraphQLView):
+    pass
 
 
 @api_view(['POST'])

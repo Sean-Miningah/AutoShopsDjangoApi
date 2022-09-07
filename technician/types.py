@@ -1,5 +1,5 @@
 from graphene_django.types import DjangoObjectType
-from .models import TechnicianDetails, TechnicianSpecializations, Specialization
+from .models import SkillBadge, TechnicianDetails, TechnicianSpecializations, Specialization
 
 
 class TechnicianDetailType(DjangoObjectType):
@@ -16,4 +16,9 @@ class TechnicianSpecializationsType(DjangoObjectType):
 class SpecializationType(DjangoObjectType):
     class Meta:
         model = Specialization
+        fields = '__all__'
+
+class SkillBadgeType(DjangoObjectType):
+    class Meta: 
+        model = SkillBadge
         fields = '__all__'

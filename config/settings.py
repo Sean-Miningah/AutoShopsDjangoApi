@@ -119,7 +119,7 @@ DATABASES = {
 }
 
 GRAPHENE = {
-    'SCHEMA': 'AutoUser.schema.schema',
+    'SCHEMA': 'config.schema.schema',
     'MIDDLEWARE': [
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
     ],
