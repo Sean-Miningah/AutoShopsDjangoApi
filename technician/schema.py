@@ -4,14 +4,10 @@ from graphene_django import DjangoObjectType
 from .models import (SkillBadge, TechnicianDetails, TechnicianSpecializations, Specialization,
         ShopFeedbackRating)
 from AutoUser.models import AutoUser
+from AutoUser.types import AutoUserType
 from .types import (TechnicianDetailType, TechnicianSpecializationsType, SpecializationType, 
         SkillBadgeType, ShopFeedbackRatingType)
 
-class AutoUserType(DjangoObjectType):
-
-    class Meta: 
-        model = AutoUser
-        fields="__all__"
 
 
 class TechnicianQuery(graphene.ObjectType):
@@ -44,6 +40,7 @@ class FeedbackInput(graphene.InputObjectType):
     tech_id = graphene.ID()
     description = graphene.String()
     rating = graphene.Float()
+    date = graphene.Date()
 
 
 class CreateFeedback(graphene.Mutation):
@@ -60,8 +57,7 @@ class CreateFeedback(graphene.Mutation):
         tech = TechnicianDetails.objects.get(id=feedback_data.tech_id)
         feedback_instance = ShopFeedbackRating(
             technician=tech, description=feedback_data.description,
-            rating=feedback_data.rating, 
-            autouser=user
+            rating=feedback_data.rating, autouser=user
         )
         feedback_instance.save()
         return CreateFeedback(feedback=feedback_instance)

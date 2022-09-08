@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
 
+# from technician.models import TechnicianDetails
+
 
 class CustomAccountManager(BaseUserManager):
 
@@ -50,4 +52,9 @@ class AutoUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+
+class AutoUserFavourite(models.Model):
+    auto_user = models.ManyToManyField(AutoUser, blank = True, related_name="autouserfavourite")
+    technician = models.ManyToManyField(AutoUser, blank = True, related_name="technicianfavourite")
+    date = models.DateField(auto_now=True)
 
