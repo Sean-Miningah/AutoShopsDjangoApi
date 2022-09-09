@@ -18,6 +18,9 @@ class TechnicianQuery(graphene.ObjectType):
     skillbadge = graphene.List(SkillBadgeType)
 
     def resolve_skillbadge(self, info, **kwargs):
+        user = info.context.user
+        print(user)
+        print(type(user))
         return SkillBadge.objects.all()
     def resolve_userinfo(self, info, **kwargs):
         user = info.context.user
@@ -41,6 +44,11 @@ class FeedbackInput(graphene.InputObjectType):
     description = graphene.String()
     rating = graphene.Float()
     date = graphene.Date()
+
+class TechnicianSpecializationInput(graphene.InputObjectType):
+    id = graphene.ID()
+    tech_id=graphene.ID()
+    specialization=graphene.ID()
 
 
 class CreateFeedback(graphene.Mutation):
@@ -81,7 +89,7 @@ class UpdateFeedback(graphene.Mutation):
 
 class DeleteFeedback(graphene.Mutation):
     class Arguments:
-        id = graphene.ID()
+        id = TechnicianSpecializationInput(required=True)
 
     feedback = graphene.Field(ShopFeedbackRatingType)
 
@@ -92,8 +100,33 @@ class DeleteFeedback(graphene.Mutation):
         return None
 
  
+class UpdateTechnicianSpecialization(graphene.Mutation):
+    class Arguments: 
+        techspecialization_data = TechnicianSpecializationInput()
+
+    techspecialization = graphene.Field(TechnicianSpecializationsType)
+
+    def mutate(root, info, techspecialization_data):
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authenticated credentials were not provided")
+        
+        if not user.is_technician:
+            raise Exception("User is not a technician")
+        technician = TechnicianDetails.objects.get(autouser=user)
+        specialization = Specialization.objects.get(id=techspecialization_data.specialization)
+        tech_specialization = TechnicianSpecializations.objects.filter(technician=technician)
+
+        if tech_specialization:
+            techspec = TechnicianSpecializations.objects.get(technician=technician)
+            techspec.specialization.add(specialization)
+            print(techspec.specialization)
+            return UpdateTechnicianSpecialization(techspec)
+            
+
 
 class TechMutations(graphene.ObjectType):
     create_feedback = CreateFeedback.Field()
     update_feedback = UpdateFeedback.Field()
     delete_feedback = DeleteFeedback.Field()
+    update_techspecialization = UpdateTechnicianSpecialization.Field()
