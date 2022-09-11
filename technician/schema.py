@@ -123,7 +123,20 @@ class UpdateTechnicianSpecialization(graphene.Mutation):
             print(techspec.specialization)
             return UpdateTechnicianSpecialization(techspec)
             
+class RemoveTechnicianSpecialization(graphene.Mutation):
+    class Arguments:
+        techspecialization_data = TechnicianSpecializationInput()
 
+    techspecialization = graphene.Field(TechnicianSpecializationsType)
+
+    def mutate(root, info, techspecialization_data):
+        user =  info.context.user
+        if not user.is_authenticated:
+            raise Exception("Authenticated credentials were not provided")
+
+        if not user.is_technician:
+            raise Exception("User is not a technician")
+        
 
 class TechMutations(graphene.ObjectType):
     create_feedback = CreateFeedback.Field()
